@@ -46,12 +46,12 @@ record_stage image_pull "$t1" "$t2"
 
 ctr cat /etc/pip/constraint.txt > "$ENV_DIR/ngc_pip_constraint.txt" 2>/dev/null || true
 if [ ! -x "$VENV/bin/python" ]; then
-  ctr python -m venv --system-site-packages "$VENV"
+  ctr python -m venv --system-site-packages --without-pip "$VENV"
 fi
 numpy_version=$(ctr "$VENV/bin/python" -c "import numpy; print(numpy.__version__)")
-ctr env -u PIP_CONSTRAINT "$VENV/bin/pip" install "numpy==$numpy_version" -r "$SCRIPTS/pins.txt"
-ctr env -u PIP_CONSTRAINT "$VENV/bin/pip" install "$INFERENCE/loadgen"
-ctr "$VENV/bin/pip" freeze > "$ENV_DIR/pip_freeze.txt"
+ctr env -u PIP_CONSTRAINT "$VENV/bin/python" -m pip install "numpy==$numpy_version" -r "$SCRIPTS/pins.txt"
+ctr env -u PIP_CONSTRAINT "$VENV/bin/python" -m pip install "$INFERENCE/loadgen"
+ctr "$VENV/bin/python" -m pip freeze > "$ENV_DIR/pip_freeze.txt"
 ctr cat /etc/os-release > "$ENV_DIR/container_os_release.txt"
 ctr_at "$BENCH" "$VENV/bin/python" -c "
 import platform, sys, numpy, scipy, pandas, nibabel, torch, mlperf_loadgen

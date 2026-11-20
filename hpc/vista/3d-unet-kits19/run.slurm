@@ -42,7 +42,7 @@ print('torch', torch.__version__, 'cuda', torch.version.cuda, 'cudnn', torch.bac
 print('cuda_available', torch.cuda.is_available(), 'device_name', torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
 print('cudnn.allow_tf32', torch.backends.cudnn.allow_tf32, 'matmul.allow_tf32', torch.backends.cuda.matmul.allow_tf32)
 " >> "$RUN_DIR/platform.txt" 2>&1
-ctr "$VENV/bin/pip" freeze > "$RUN_DIR/pip_freeze.txt"
+ctr "$VENV/bin/python" -m pip freeze > "$RUN_DIR/pip_freeze.txt"
 
 t0=$(date +%s.%N)
 ctr_at "$BENCH" env SKIP_VERIFY_ACCURACY=1 LOG_PATH="$LOG_DIR" "$VENV/bin/python" -u "$SCRIPTS/run_with_device.py" \
